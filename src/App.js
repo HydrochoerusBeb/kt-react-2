@@ -1,24 +1,83 @@
-import logo from './logo.svg';
 import './App.css';
+import ProductItem from './components/ProductItem';
+import { useState } from 'react';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const data = [ 
+
+    {id: 1, name: 'Велосипед', price: 1000, count: 1}, 
+    
+    {id: 2, name: 'Самокат', price: 700, count: 1}, 
+    
+    {id: 3, name: 'Ролики', price: 1300, count: 2}, 
+    
+    {id: 4, name: 'Сноуборд', price: 19000, count: 4}
+    
+]
+
+const [products, setProducts] = useState(data)
+
+function increment(id) {
+const newCount = products.map((elem) => {
+if (elem.id === id && elem.count < 25) {
+  return { ...elem, count: elem.count + 1 };
+}
+  return elem;
+});
+  setProducts(newCount);
+}
+
+function decrement(id){
+  const newCount = products.map((elem) =>{
+    if(elem.id === id && elem.count > 0){
+      return{...elem, count: elem.count - 1}
+    }
+    return elem 
+  })
+  setProducts(newCount)
+}
+
+  function addNewProduct() {
+    const input = prompt('Введите товар по следующему образцу - "название цена"');
+    if (input) {
+    const [productName, productPrice] = input.split(' ');
+    const newProduct = {
+    id: Date.now(),
+    name: productName,
+    price: parseFloat(productPrice),
+    count: 1,
+    };
+    setProducts([...products, newProduct]);
+    }
+  }
+
+
+
+function deleteProduct(id){
+  const updatedProducts = products.filter(elem => elem.id !== id);
+    setProducts(updatedProducts);
+  };
+  
+
+    return (
+<div className="App">
+<button className='butb' onClick={addNewProduct}>Добавить товар</button>
+  <div className='cards'>
+  
+  {products.map((elem) => (
+    <ProductItem
+      key={elem.id}
+      name={elem.name}
+      price={elem.price}
+      count={elem.count}
+      increment={() => increment(elem.id)}
+      decrement={() => decrement(elem.id)}
+      Delete={() => deleteProduct(elem.id)}
+    />
+    ))}
+  </div>
+</div>
   );
 }
 
